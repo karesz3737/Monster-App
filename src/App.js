@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import CardComponent from "./Components/card-list/card-list-component";
+import SearchBar from "./Components/search-box/search-bar";
+import TitleBar from "./Components/title-bar/title-bar.js";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./App.css";
+
+class App extends React.Component {
+  "";
+  constructor() {
+    super();
+    this.state = {  
+      monsters: [],
+      searchField: "",
+      placeholder: "Search for Robots",
+      heading: "Robot  App",
+    };
+  }
+  handleChange = (e) => {
+    this.setState({ searchField: e.target.value });
+  };
+  componentDidMount() {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((el) => this.setState({ monsters: el }));
+  }
+  render() {
+    const { monsters, searchField } = this.state;
+    const monstersFiltered = monsters.filter((el) =>
+      el.name.toLowerCase().includes(searchField.toLowerCase())
+    );
+    return (
+      <div className="App">
+        <TitleBar heading={this.state.heading} />
+        <SearchBar
+          placeholder={this.state.placeholder}
+          handleChange={this.handleChange}
+        />
+        <CardComponent mon={monstersFiltered}></CardComponent>
+      </div>
+    );
+  }
 }
-
 export default App;
